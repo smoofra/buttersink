@@ -78,6 +78,9 @@ command.add_argument('-V', '--version', action="version", version='%(prog)s ' + 
                      help='display version',
                      )
 
+command.add_argument('-r', '--rescan', action='store_true',
+                     help='perform a btrfs quota rescan first')
+
 command.add_argument('--part-size', action="store", type=int, default=theChunkSize,
                      help='Size of chunks in a multipart upload',
                      )
@@ -213,6 +216,10 @@ def main():
             dest.showProgress = True
 
         with source:
+
+            if args.rescan:
+                source.rescanSizes()
+
             try:
                 next(source.listVolumes())
             except StopIteration:
